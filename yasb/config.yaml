@@ -1,0 +1,356 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/amnweb/yasb/main/schema.json
+# YASB Main Configuration File
+# Documentation: https://github.com/amnweb/yasb/wiki
+
+# ==============================================================================
+# GLOBAL APPLICATION SETTINGS
+# ==============================================================================
+watch_stylesheet: true   # Auto-reload bar when styles.css is saved
+watch_config: true       # Auto-reload bar when config.yaml is saved
+debug: true              # Enable verbose logging for troubleshooting
+update_check: true       # Automatically check for YASB software updates
+
+# ==============================================================================
+# BAR DEFINITIONS
+# ==============================================================================
+bars:
+  primary-bar:
+    enabled: true
+    screens: ["*"]       # Display on all available monitors
+    class_name: "yasb-bar"
+    style: "adaptive"    # Enables rounded island/pill styling from CSS
+    
+    # Bar Alignment & Position
+    alignment:
+      position: "top"
+      align: "center"
+      
+    # Smooth Appearance Animations
+    animation:
+      enabled: true
+      duration: 200      # Animation speed in milliseconds
+      
+    # Background Blur Effects
+    blur_effect:
+      enabled: false
+      dark_mode: false
+      round_corners: false
+      border_color: ""
+      
+    # Windows Desktop Integration
+    window_flags:
+      always_on_top: true
+      windows_app_bar: true # Reserves desktop space so windows don't overlap
+      auto_hide: false
+      
+    # Sizing & Outer Padding
+    dimensions:
+      width: "100%"
+      height: 36
+    padding:
+      top: 0
+      left: 0
+      bottom: 0
+      right: 0
+      
+    # Widget Placement Order
+    widgets:
+      left:
+        - glazewm_workspaces
+      center:
+        - taskbar
+      right:
+        - audio_visualizer
+        - systray
+        - open_meteo
+        - wallpapers
+        - battery
+        - volume
+        - clock
+        - control_center
+
+# ==============================================================================
+# WIDGET CONFIGURATIONS
+# ==============================================================================
+widgets:
+
+  # --- Wallpaper Selector Widget ---
+  wallpapers:
+    type: "yasb.wallpapers.WallpapersWidget"
+    options:
+      label: "<span>\ue7aa</span>"
+      image_path: "C:/Users/Startklar!/Wallpapers"
+      engine:
+        enabled: true
+        animation: "split"
+      gallery:
+        type: "strip"
+        image_width: 240
+        accent_color: "#fff"
+        orientation: "portrait"
+        image_corner_radius: 0
+      keybindings:
+        - keys: "alt+e"
+          action: "toggle_gallery"
+          screen: "cursor"
+
+  # --- Taskbar / Running Apps Widget ---
+  taskbar:
+    type: "yasb.taskbar.TaskbarWidget"
+    options:
+      icon_size: 16
+      tooltip: true
+      show_only_visible: true
+      strict_filtering: true
+      monitor_exclusive: false
+      hide_empty: true
+      grouping:
+        enabled: true
+        show_count: false
+      animation:
+        enabled: true
+        duration: 200
+      preview:
+        enabled: true
+        width: 180
+        delay: 400
+        padding: 8
+        margin: 8
+        blur: true
+        peek: true
+      title_label:
+        enabled: false
+
+  # --- Audio Visualizer Widget ---
+  audio_visualizer:
+    type: "yasb.audio_visualizer.AudioVisualizerWidget"
+    options:
+      edge_fade: 0
+      mirror: true
+      style: "bars"
+      height: 16
+      smoothness: 80
+      sensitivity: 50
+      auto_gain: true
+      framerate: 30
+      freq_min: 500
+      freq_max: 12000
+      hide_idle: true
+      hide_idle_after: 3000
+      channels: "stereo"
+      mono_option: "average"
+      reverse: false
+      bars:
+        count: 6
+        width: 1
+        gap: 4
+      waves:
+        width: 40
+      dots:
+        count: 16
+        size: 1
+        gap: 3
+
+  # --- Quick Settings & Media Control Center ---
+  control_center:
+    type: "yasb.control_center.ControlCenterWidget"
+    options:
+      label: "<span>\uE712</span>"
+      tooltip: true
+      sections_order:
+        - "system_controls"
+        - "quick_actions"
+        - "media"
+      popup:
+        alignment: "right"
+        direction: "down"
+        border_color: "system"
+        round_corners: true
+        round_corners_type: "normal"
+        offset_top: 8
+      sections:
+        system_controls:
+          profile_image_size: 28
+          power_icon: "\uE7E8"
+          lock_icon: "\uE72E"
+          settings_icon: "\uE713"
+        quick_actions:
+          show: true
+          columns: 3
+          label_position: "default"
+          actions:
+            - id: "toggle_dnd"
+              label: "Do Not Disturb"
+              icon: "\uf285"
+            - id: "toggle_mute"
+              label: "Mute"
+              icon: "\ue74f"
+            - id: "toggle_theme"
+              label: "Dark Mode"
+              icon: "\uE708"
+        media:
+          show: true
+          thumbnail_size: 36
+          thumbnail_radius: 4
+          icons:
+            prev_track: "\ue622"
+            next_track: "\ue623"
+            play: "\uf5b0"
+            pause: "\ue62e"
+      callbacks:
+        on_left: "toggle_menu"
+
+  # --- GlazeWM Workspace Indicator ---
+  glazewm_workspaces:
+    type: "glazewm.workspaces.GlazewmWorkspacesWidget"
+    options:
+      hide_empty_workspaces: true
+      hide_if_offline: true
+
+  # --- Clock & Calendar Widget ---
+  clock:
+    type: "yasb.clock.ClockWidget"
+    options:
+      label: "{%H:%M}<span>{alarm}</span>"
+      label_alt: "{%a, %d %b %H:%M}"
+      timezones: []
+      calendar:
+        blur: true
+        round_corners: true
+        alignment: "center"
+        direction: "down"
+        extended: false
+        show_years: true
+        show_holidays: false
+        show_week_numbers: true
+      callbacks:
+        on_left: "toggle_calendar"
+        on_middle: "toggle_label"
+        on_right: "context_menu"
+
+  # --- Volume Control Widget ---
+  volume:
+    type: "yasb.volume.VolumeWidget"
+    options:
+      label: "<span>{icon}</span>"
+      label_alt: "<span>{icon}</span>{level}"
+      tooltip: true
+      icons:
+        muted: "\uE74F"
+        "5": "\uE995"
+        "10": "\uE995"
+        "20": "\uE995"
+        "50": "\uE995"
+        "100": "\uE995"
+      callbacks:
+        on_left: "toggle_volume_menu"
+        on_right: "toggle_mute"
+      audio_menu:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "system"
+        alignment: "center"
+        direction: "down"
+        show_apps: true
+        show_app_labels: false
+        show_app_icons: true
+        show_apps_expanded: false
+        app_icons:
+          toggle_down: "\uE972"
+          toggle_up: "\uE971"
+
+  # --- Battery Level Widget ---
+  battery:
+    type: "yasb.battery.BatteryWidget"
+    options:
+      label: "<span>{icon}</span> {percent}%"
+      label_alt: "<span>{icon}</span> {percent}% | {power}W | {time_remaining}"
+      update_interval: 5000
+      time_remaining_natural: false
+      hide_unsupported: true
+      charging_options:
+        icon_format: "{charging_icon}"
+        blink_charging_icon: true
+        blink_interval: 500
+      status_thresholds:
+        critical: 10
+        low: 25
+        medium: 75
+        high: 95
+        full: 100
+      status_icons:
+        icon_charging: "\uf241"
+        icon_critical: "\uf244"
+        icon_low: "\uf243"
+        icon_medium: "\uf242"
+        icon_high: "\uf241"
+        icon_full: "\uf240"
+
+  # --- System Tray Widget ---
+  systray:
+    type: "yasb.systray.SystrayWidget"
+    options:
+      class_name: "systray"
+      label_collapsed: "\uE972"
+      label_expanded: "\uE971"
+      label_position: "right"
+      pin_click_modifier: "ctrl"
+      show_unpinned: true
+      show_battery: false
+      show_volume: false
+      icon_size: 16
+      use_hook: false
+      show_in_popup: true
+      icons_per_row: 5
+      popup:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "system"
+        alignment: "center"
+        direction: "down"
+        offset_top: 6
+        offset_left: 0
+
+  # --- OpenMeteo Weather Widget ---
+  open_meteo:
+    type: "yasb.open_meteo.OpenMeteoWidget"
+    options:
+      label: "<span>\uE706</span>"
+      label_alt: "<span>\uE706</span> Current {temp}, Min {min_temp}, Max {max_temp}"
+      tooltip: true
+      update_interval: 600
+      hide_decimal: true
+      units: "metric"
+      callbacks:
+        on_left: "toggle_card"
+        on_middle: "do_nothing"
+        on_right: "toggle_label"
+      icons:
+        sunnyDay: "\uE706"
+        clearNight: "\uEC46"
+      weather_card:
+        blur: true
+        alignment: "left"
+        border_color: "system"
+        direction: "down"
+        icon_size: 32
+        show_hourly_forecast: true
+        time_format: "24h"
+        hourly_point_spacing: 76
+        hourly_icon_size: 16
+        icon_smoothing: true
+        temp_line_width: 2
+        current_line_color: "#8EAEE8"
+        current_line_width: 1
+        current_line_style: "dot"
+        hourly_forecast_buttons:
+          enabled: false
+        weather_animation:
+          enabled: true
+          snow_overrides_rain: true
+          temp_line_animation_style: "both"
+          rain_effect_intensity: 1.0
+          snow_effect_intensity: 1.0
+          scale_with_chance: true
